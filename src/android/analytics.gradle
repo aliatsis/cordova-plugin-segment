@@ -1,5 +1,8 @@
+apply plugin: 'com.android.application'
+
 dependencies {
-	compile('com.segment.analytics.android:analytics:+@aar') {
-	  transitive = true
-	}
+  compile 'com.google.android.gms:play-services:8.3.0'
+  compile('com.segment.analytics.android:analytics:+@aar') {
+    transitive = true
+  }
 }
