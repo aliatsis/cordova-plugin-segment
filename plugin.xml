@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+ <!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+-->
+
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    id="cordova-plugin-segment" version="0.0.1">
+    <name>cordova-plugin-segment</name>
+    <description>Cordova Plugin Segment</description>
+    <license>Apache 2.0</license>
+    <keywords>cordova,appsflyer</keywords>
+    <repo>https://github.com/aliatsis/cordova-plugin-segment.git</repo>
+    <engines>
+        <engine name="cordova" version=">=3.8.0"/>
+    </engines>
+    <js-module src="www/segment.js" name="segment">
+        <clobbers target="analytics" />
+    </js-module>
+    <platform name="android">
+        <config-file target="res/xml/config.xml" parent="/*">
+            <feature name="AnalyticsPlugin">
+                <param name="android-package" value="com.segment.analytics.cordova.AnalyticsPlugin"/>
+            </feature>
+            <preference name="analytics_write_key"/>
+        </config-file>
+
+        <config-file target="AndroidManifest.xml" parent="/manifest">
+            <!-- Recommended by us and most bundled integrations. -->
+            <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+
+            <!-- Allow you to get LOGCAT information when a crash occurs. -->
+            <uses-permission android:name="android.permission.READ_LOGS"/>
+
+            <!-- Allow you to see which activity was active when a crash occurs. -->
+            <uses-permission android:name="android.permission.GET_TASKS"/>
+
+            <!-- Allows location to be tracked by bundled integrations. -->
+            <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+            <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+
+            <!-- Required by Leanplum (and for push notifications). -->
+            <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE"/>
+        </config-file>
+
+        <source-file src="src/android/AnalyticsPlugin.java" target-dir="src/com/segment/analytics/cordova"/>
+        <framework src="com.segment.analytics.android:analytics:+@aar"/>
+    </platform>
+
+<!--     <platform name="ios">
+        <config-file target="config.xml" parent="/*">
+            <feature name="AppsFlyerPlugin">
+                <param name="ios-package" value="AppsFlyerPlugin" />
+            </feature>
+        </config-file>
+
+        <header-file src="platform/ios/AppsFlyerPlugin.h" />
+        <header-file src="platform/ios/AppsFlyerTracker.h" />
+        <source-file src="platform/ios/AppsFlyerPlugin.m" />
+        <source-file src="platform/ios/libAppsFlyerLib.a" compiler-flags="-lAppsFlyerLib" framework="true" />
+        <framework src="AdSupport.framework" weak="true" />
+        <framework src="iAd.framework" weak="true" />
+    </platform> -->
+</plugin>
