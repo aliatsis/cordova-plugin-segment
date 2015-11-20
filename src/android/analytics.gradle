@@ -1,0 +1,5 @@
+dependencies {
+	compile('com.segment.analytics.android:analytics:+@aar') {
+	  transitive = true
+	}
+}

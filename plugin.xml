@@ -60,7 +60,7 @@
         </config-file>
 
         <source-file src="src/android/AnalyticsPlugin.java" target-dir="src/com/segment/analytics/cordova"/>
-        <framework src="com.segment.analytics.android:analytics:+@aar"/>
+        <framework src="src/android/analytics.gradle" custom="true" type="gradleReference"/>
     </platform>
 
 <!--     <platform name="ios">
