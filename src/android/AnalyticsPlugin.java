@@ -1,370 +1,279 @@
 package com.segment.analytics.cordova;
 
-//import java.util.Map;
-//import java.util.List;
-//import java.util.HashMap;
-//import java.util.Iterator;
-//import java.util.ArrayList;
-//import java.util.concurrent.Executors;
-//import java.util.concurrent.ScheduledExecutorService;
-//import java.util.concurrent.TimeUnit;
-//
-//import org.apache.cordova.CallbackContext;
+import android.util.Log;
+
+import com.segment.analytics.Analytics;
+import com.segment.analytics.Analytics.LogLevel;
+import com.segment.analytics.Properties;
+import com.segment.analytics.Properties.Product;
+import com.segment.analytics.StatsSnapshot;
+import com.segment.analytics.Traits;
+import com.segment.analytics.Traits.Address;
+
+import org.apache.cordova.BuildConfig;
+import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
-//import org.apache.cordova.PluginResult;
-//import org.json.JSONObject;
-//import org.json.JSONArray;
-//import org.json.JSONException;
-//
-//import com.segment.analytics;
-//
-//import android.content.Context;
-//import android.util.Log;
+import org.apache.cordova.PluginResult;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class AnalyticsPlugin extends CordovaPlugin {
 
-//    private static final String TAG = "AnalyticsPlugin";
-//    private static CallbackContext context;
-//    private static boolean measureSessionDuration;
-//    private final Analytics analytics = null;
-//    private final String writeKey;
-//
-//    public AnalyticsPlugin () {
-//        writeKey = this.preferences.getString("analytics_write_key", null);
-//
-//        if (writeKey == null || "".equals(writeKey)) {
-//            Log.e(TAG, "Invalid analytics_write_key: " + writeKey);
-//        } else {
-//            analytics = new Analytics.Builder(
-//                    cordova.getActivity().getApplicationContext(),
-//                    writeKey
-//            ).build();
-//            Analytics.setSingletonInstance(analytics);
-//        }
-//    }
-//
-//    @Override
-//    public boolean execute(final String action, final JSONArray args, final CallbackContext callbackContext) throws JSONException {
-//        if (analytics == null) {
-//            Log.e(TAG, "Error initializing");
-//            return false;
-//        }
-//
-//        if("setCurrencyCode".equals(action))
-//        {
-//            methodReference = Analytics::setCurrencyCode;
-//            return true;
-//        }
-//        else if("setCustomerUserId".equals(action))
-//        {
-//            setCustomerUserId(args, callbackContext);
-//            return true;
-//        }
-//        else if("setUserEmails".equals(action))
-//        {
-//            setUserEmails(args, callbackContext);
-//            return true;
-//        }
-//        else if("setDeviceTrackingDisabled".equals(action))
-//        {
-//            setDeviceTrackingDisabled(args);
-//            return true;
-//        }
-//        else if("setMeasureSessionDuration".equals(action))
-//        {
-//            setMeasureSessionDuration(args);
-//            return true;
-//        }
-//        else if("getAppsFlyerUID".equals(action))
-//        {
-//            getAppsFlyerUID(args, callbackContext);
-//            return true;
-//        }
-//        else if("trackEvent".equals(action))
-//        {
-//            trackEvent(args);
-//            return true;
-//        }
-//        else if("initSdk".equals(action))
-//        {
-//            cordova.getThreadPool().execute(new Runnable() {
-//                @Override
-//                public void run() {
-//                    initSdk(args, callbackContext);
-//                }
-//            });
-//            return true;
-//        }
-//        return false;
-//    }
-//
-//    @Override
-//    public void onResume(boolean multitasking) {
-//        super.onResume(multitasking);
-//
-//        if (measureSessionDuration) {
-//            AppsFlyerLib.onActivityResume(cordova.getActivity());
-//        }
-//    }
-//
-//    @Override
-//    public void onPause(boolean multitasking) {
-//        super.onPause(multitasking);
-//
-//        if (measureSessionDuration) {
-//            AppsFlyerLib.onActivityPause(cordova.getActivity());
-//        }
-//    }
-//
-//    private void initSdk(JSONArray parameters, final CallbackContext callbackContext) {
-//        context = callbackContext;
-//        String devKey = null;
-//        try
-//        {
-//            if (parameters.length() > 0) {
-//                devKey = parameters.getString(0);
-//            }
-//
-//            if (parameters.length() > 1) {
-//                measureSessionDuration = parameters.getBoolean(1);
-//            }
-//
-//            if(devKey != null){
-//                AppsFlyerLib.setAppsFlyerKey(devKey);
-//                initListener(callbackContext);
-//            }
-//        }
-//        catch (JSONException e)
-//        {
-//            e.printStackTrace();
-//            Log.e(TAG, "error on initSdk", e);
-//            callbackContext.error(e.getMessage());
-//            return;
-//        }
-//
-//        AppsFlyerLib.registerConversionListener(cordova.getActivity().getApplicationContext(), new AppsFlyerConversionListener() {
-//
-//            @Override
-//            public void onAppOpenAttribution(Map<String, String> arg0) {
-//                // TODO Auto-generated method stub
-//
-//            }
-//
-//            @Override
-//            public void onAttributionFailure(String errorMessage) {
-//                //Added this to avoid compilation failure
-//            }
-//
-//            @Override
-//            public void onInstallConversionDataLoaded(Map<String, String> conversionData) {
-//                final JSONObject message = new JSONObject(conversionData);
-//                if (context != null) {
-//
-//                    cordova.getActivity().runOnUiThread(
-//                            new Runnable() {
-//                                @Override
-//                                public void run() {
-//                                    PluginResult result = new PluginResult(PluginResult.Status.OK, message);
-//                                    result.setKeepCallback(true);
-//                                    context.sendPluginResult(result);
-//                                }
-//                            }
-//                    );
-//
-//                } else {
-//                    Log.w(TAG, "onInstallConversionDataLoaded: context is null");
-//                }
-//            }
-//
-//            @Override
-//            public void onInstallConversionFailure(String arg0) {
-//                // TODO Auto-generated method stub
-//                Log.w(TAG, "onInstallConversionFailure: " + arg0);
-//                context.error("onInstallConversionFailure: " + arg0);
-//            }
-//
-//        });
-//
-//    }
-//
-//    private void initListener(final CallbackContext callbackContext) {
-//        Runnable task = new Runnable() {
-//            public void run() {
-//                AppsFlyerLib.sendTracking(cordova.getActivity().getApplicationContext());
-//            }
-//        };
-//        ScheduledExecutorService worker = Executors.newSingleThreadScheduledExecutor();
-//        worker.schedule(task, 500, TimeUnit.MILLISECONDS);
-//
-//        PluginResult result = new PluginResult(PluginResult.Status.NO_RESULT);
-//        result.setKeepCallback(true);
-//        callbackContext.sendPluginResult(result);
-//    }
-//
-//    private void trackEvent(JSONArray parameters) {
-//        String eventName = null;
-//        JSONObject eventValueJSON = null;
-//        Map<String, Object> eventValue = null;
-//
-//        try
-//        {
-//            eventName = parameters.getString(0);
-//
-//            if (parameters.length() > 1) {
-//                eventValueJSON = parameters.getJSONObject(1);
-//            }
-//
-//            if (eventValueJSON != null) {
-//                eventValue = toMap(eventValueJSON);
-//            }
-//        }
-//        catch (JSONException e)
-//        {
-//            e.printStackTrace();
-//            return;
-//        }
-//        if(eventName == null || eventName.length()==0)
-//        {
-//            return;
-//        }
-//        Context c = this.cordova.getActivity().getApplicationContext();
-//        AppsFlyerLib.trackEvent(c, eventName, eventValue);
-//    }
-//
-//    public static Map<String, Object> toMap(JSONObject object) throws JSONException {
-//        Map<String, Object> map = new HashMap<String, Object>();
-//
-//        Iterator<String> keysItr = object.keys();
-//        while(keysItr.hasNext()) {
-//            String key = keysItr.next();
-//            Object value = object.get(key);
-//            map.put(key, value);
-//        }
-//
-//        return map;
-//    }
-//
-//
-//    private void setCurrencyCode(JSONArray parameters)
-//    {
-//        String currencyId=null;
-//        try
-//        {
-//            currencyId = parameters.getString(0);
-//        }
-//        catch (JSONException e)
-//        {
-//            e.printStackTrace();
-//            return;
-//        }
-//        if(currencyId == null || currencyId.length()==0)
-//        {
-//            return;
-//        }
-//        AppsFlyerLib.setCurrencyCode(currencyId);
-//
-//    }
-//
-//    private void setMeasureSessionDuration(JSONArray parameters)
-//    {
-//        try
-//        {
-//            measureSessionDuration = parameters.getBoolean(0);
-//        }
-//        catch (JSONException e)
-//        {
-//            e.printStackTrace();
-//            return;
-//        }
-//    }
-//
-//    private void setCustomerUserId(JSONArray parameters, CallbackContext callbackContext)
-//    {
-//        try
-//        {
-//            String customeUserId = null;
-//
-//            if (parameters.length() > 0) {
-//                customeUserId = parameters.getString(0);
-//            }
-//
-//            AppsFlyerLib.setCustomerUserId(customeUserId);
-//            PluginResult r = new PluginResult(PluginResult.Status.OK);
-//            r.setKeepCallback(false);
-//            callbackContext.sendPluginResult(r);
-//        }
-//        catch (JSONException e)
-//        {
-//            e.printStackTrace();
-//            return;
-//        }
-//    }
-//
-//    private void setDeviceTrackingDisabled(JSONArray parameters)
-//    {
-//        try
-//        {
-//            AppsFlyerLib.setDeviceTrackingDisabled(parameters.getBoolean(0));
-//        }
-//        catch (JSONException e)
-//        {
-//            e.printStackTrace();
-//            return;
-//        }
-//    }
-//
-//    private void setUserEmails(JSONArray parameters, CallbackContext callbackContext)
-//    {
-//        try
-//        {
-//            JSONArray emailsJSON = parameters.getJSONArray(0);
-//            EmailsCryptType cryptMethod = null;
-//            String cryptMethodValue = "";
-//
-//            if (parameters.length() > 1) {
-//                cryptMethodValue = parameters.getString(1);
-//            }
-//
-//            List<String> emails = new ArrayList<String>();
-//            for (int i=0; i < emailsJSON.length(); i++) {
-//                emails.add(emailsJSON.getString(i));
-//            }
-//
-//            String[] emailVarargs = emails.toArray(new String[emails.size()]);
-//
-//            if ("MD5".equals(cryptMethodValue)) {
-//                cryptMethod = EmailsCryptType.MD5;
-//            } else if ("SHA1".equals(cryptMethodValue)) {
-//                cryptMethod = EmailsCryptType.SHA1;
-//            } else {
-//                cryptMethod = EmailsCryptType.NONE;
-//            }
-//
-//            AppsFlyerLib.setUserEmails(cryptMethod, emailVarargs);
-//
-//            PluginResult r = new PluginResult(PluginResult.Status.OK);
-//            r.setKeepCallback(false);
-//            callbackContext.sendPluginResult(r);
-//        }
-//        catch (JSONException e)
-//        {
-//            e.printStackTrace();
-//            return;
-//        }
-//    }
-//
-//    private void getAppsFlyerUID(JSONArray parameters, CallbackContext callbackContext)
-//    {
-//        String id = AppsFlyerLib.getAppsFlyerUID(cordova.getActivity().getApplicationContext());
-//        PluginResult r = new PluginResult(PluginResult.Status.OK, id);
-//        r.setKeepCallback(false);
-//        callbackContext.sendPluginResult(r);
-//    }
-//
-//    @Override
-//    public void onDestroy() {
-//        context = null;
-//
-//        super.onDestroy();
-//    }
+    private static final String TAG = "AnalyticsPlugin";
+    private final Analytics analytics;
+    private final String writeKey;
+
+    public AnalyticsPlugin () {
+        String writeKeyPreferenceName;
+        LogLevel logLevel;
+
+        if(BuildConfig.DEBUG) {
+            writeKeyPreferenceName = "analytics_debug_write_key";
+            logLevel = LogLevel.VERBOSE;
+        } else {
+            writeKeyPreferenceName = "analytics_write_key";
+            logLevel = LogLevel.NONE;
+        }
+
+        writeKey = this.preferences.getString(writeKeyPreferenceName, null);
+
+        if (writeKey == null || "".equals(writeKey)) {
+            analytics = null;
+            Log.e(TAG, "Invalid write key: " + writeKey);
+        } else {
+            analytics = new Analytics.Builder(
+                    cordova.getActivity().getApplicationContext(),
+                    writeKey
+            ).logLevel(logLevel).build();
+
+            Analytics.setSingletonInstance(analytics);
+        }
+    }
+
+    @Override
+    public boolean execute(final String action, final JSONArray args, final CallbackContext callbackContext) throws JSONException {
+        if (analytics == null) {
+            Log.e(TAG, "Error initializing");
+            return false;
+        }
+
+        if ("identify".equals(action)) {
+            identify(args);
+            return true;
+        } else if ("group".equals(action)) {
+            group(args);
+            return true;
+        } else if ("track".equals(action)) {
+            track(args);
+            return true;
+        } else if ("screen".equals(action)) {
+            screen(args);
+            return true;
+        } else if ("alias".equals(action)) {
+            alias(args);
+            return true;
+        } else if ("reset".equals(action)) {
+            reset();
+            return true;
+        } else if ("flush".equals(action)) {
+            flush();
+            return true;
+        } else if ("getSnapshot".equals(action)) {
+            getSnapshot(callbackContext);
+            return true;
+        }
+
+        return false;
+    }
+
+    private void identify(JSONArray args) {
+        try{
+            analytics.with(cordova.getActivity().getApplicationContext()).identify(
+                args.getString(0),
+                makeTraitsFromJSON(args.getJSONObject(1)),
+                null // passing options is deprecated
+            );
+        } catch(JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void group(JSONArray args) {
+        try{
+            analytics.with(cordova.getActivity().getApplicationContext()).group(
+                    args.getString(0),
+                    makeTraitsFromJSON(args.getJSONObject(1)),
+                    null // passing options is deprecated
+            );
+        } catch(JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void track(JSONArray args) {
+        try{
+            analytics.with(cordova.getActivity().getApplicationContext()).track(
+                    args.getString(0),
+                    makePropertiesFromJSON(args.getJSONObject(1)),
+                    null // passing options is deprecated
+            );
+        } catch(JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void screen(JSONArray args) {
+        try{
+            analytics.with(cordova.getActivity().getApplicationContext()).screen(
+                    args.getString(0),
+                    args.getString(1),
+                    makePropertiesFromJSON(args.getJSONObject(2)),
+                    null // passing options is deprecated
+            );
+        } catch(JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void alias(JSONArray args) {
+        try{
+            analytics.with(cordova.getActivity().getApplicationContext()).alias(
+                    args.getString(0),
+                    null // passing options is deprecated
+            );
+        } catch(JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void reset() {
+        analytics.with(cordova.getActivity().getApplicationContext()).reset();
+    }
+
+    private void flush() {
+        analytics.with(cordova.getActivity().getApplicationContext()).flush();
+    }
+
+    private void getSnapshot(CallbackContext callbackContext) {
+        StatsSnapshot snapshot = analytics.with(cordova.getActivity().getApplicationContext()).getSnapshot();
+        JSONObject snapshotJSON = new JSONObject();
+
+        try {
+            snapshotJSON.put("timestamp", snapshot.timestamp);
+            snapshotJSON.put("flushCount", snapshot.flushCount);
+            snapshotJSON.put("flushEventCount", snapshot.flushEventCount);
+            snapshotJSON.put("integrationOperationCount", snapshot.integrationOperationCount);
+            snapshotJSON.put("integrationOperationDuration", snapshot.integrationOperationDuration);
+            snapshotJSON.put("integrationOperationAverageDuration", snapshot.integrationOperationAverageDuration);
+            snapshotJSON.put("integrationOperationDurationByIntegration", new JSONObject(snapshot.integrationOperationDurationByIntegration));
+
+            PluginResult r = new PluginResult(PluginResult.Status.OK, snapshotJSON);
+            r.setKeepCallback(false);
+            callbackContext.sendPluginResult(r);
+        } catch(JSONException e) {
+            e.printStackTrace();
+            return;
+        }
+    }
+
+    private Traits makeTraitsFromJSON(JSONObject json) {
+        Traits traits = new Traits();
+        ConcurrentHashMap<String, Object> traitMap = jsonToMap(json);
+
+        if (traitMap != null) {
+            if (traitMap.get("address") != null) {
+                traitMap.put("address", new Address((ConcurrentHashMap<String, Object>) traitMap.get("address")));
+            }
+
+            traits.putAll(traitMap);
+        }
+
+        return traits;
+    }
+
+    private Properties makePropertiesFromJSON(JSONObject json) {
+        Properties properties = new Properties();
+        ConcurrentHashMap<String, Object> propertiesMap = jsonToMap(json);
+
+        if (propertiesMap != null) {
+            List<ConcurrentHashMap<String, Object>> rawProducts = (List<ConcurrentHashMap<String, Object>>) propertiesMap.get("products");
+
+            if (rawProducts != null) {
+                List<Product> products = new ArrayList<Product>();
+
+                for (ConcurrentHashMap<String, Object> rawProduct : rawProducts) {
+                    Product product = new Product(
+                        (String) rawProduct.get("id"),
+                        (String) rawProduct.get("sku"),
+                        (Double) rawProduct.get("price")
+                    );
+
+                    product.putAll(rawProduct);
+                    products.add(product);
+                }
+
+                propertiesMap.put("products", products.toArray(new Product[products.size()]));
+            }
+
+            properties.putAll(propertiesMap);
+        }
+
+        return properties;
+    }
+
+    public static ConcurrentHashMap<String, Object> jsonToMap(JSONObject json) {
+        ConcurrentHashMap<String, Object> retMap = new ConcurrentHashMap<String, Object>();
+
+        try {
+            if (json != JSONObject.NULL) {
+                retMap = toMap(json);
+            }
+        } catch(JSONException e) {
+            e.printStackTrace();
+        }
+
+        return retMap;
+    }
+
+    public static ConcurrentHashMap<String, Object> toMap(JSONObject object) throws JSONException {
+        ConcurrentHashMap<String, Object> map = new ConcurrentHashMap<String, Object>();
+
+        Iterator<String> keysItr = object.keys();
+        while(keysItr.hasNext()) {
+            String key = keysItr.next();
+            Object value = object.get(key);
+
+            if(value instanceof JSONArray) {
+                value = toList((JSONArray) value);
+            }
+
+            else if(value instanceof JSONObject) {
+                value = toMap((JSONObject) value);
+            }
+            map.put(key, value);
+        }
+        return map;
+    }
+
+    public static List<Object> toList(JSONArray array) throws JSONException {
+        List<Object> list = new ArrayList<Object>();
+        for(int i = 0; i < array.length(); i++) {
+            Object value = array.get(i);
+            if(value instanceof JSONArray) {
+                value = toList((JSONArray) value);
+            }
+
+            else if(value instanceof JSONObject) {
+                value = toMap((JSONObject) value);
+            }
+            list.add(value);
+        }
+        return list;
+    }
 }

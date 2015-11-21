@@ -1,79 +1,66 @@
-(function(global) {
-  var Segment = function() {};
+var exec = require('cordova/exec');
 
-  Segment.prototype.initSdk = function(args) {
-    var self = this;
-    cordova.exec(
-      function(conversionData) {
-        self.onInstallConversionDataLoaded(conversionData);
-      }, null, "SegmentPlugin", "initSdk", args);
-  };
+var analytics = {};
 
-  Segment.prototype.setCurrencyCode = function(currencyId) {
-    cordova.exec(null, null, "SegmentPlugin", "setCurrencyCode", [currencyId]);
-  };
+analytics.identify = function() {
+  var args = Array.prototype.slice.call(arguments);
+  args.length = 3;
 
-  Segment.prototype.setCustomerUserId = function(customerUserId) {
-    cordova.exec(null, null, "SegmentPlugin", "setCustomerUserId", [customerUserId]);
-  };
+  if (typeof args[0] !== 'string') {
+    args.unshift(null);
+    args = args.slice(0, 3);
+  }
 
-  Segment.prototype.setUserEmails = function(emails, cryptMethod) {
-    cordova.exec(null, null, "SegmentPlugin", "setUserEmails", [emails, cryptMethod]);
-  };
+  exec(null, null, "AnalyticsPlugin", "identify", args);
+};
 
-  Segment.prototype.setMeasureSessionDuration = function(measureSessionDuration) {
-    cordova.exec(null, null, "SegmentPlugin", "setMeasureSessionDuration", [!!measureSessionDuration]);
-  };
+analytics.group = function() {
+  var args = Array.prototype.slice.call(arguments);
+  args.length = 3;
 
-  Segment.prototype.setDeviceTrackingDisabled = function(disabled) {
-    cordova.exec(null, null, "SegmentPlugin", "setDeviceTrackingDisabled", [!!disabled]);
-  };
+  exec(null, null, "AnalyticsPlugin", "group", args);
+};
 
-  Segment.prototype.disableAppleAdSupportTracking = function(disabled) {
-    cordova.exec(null, null, "SegmentPlugin", "disableAppleAdSupportTracking", [!!disabled]);
-  };
+analytics.track = function() {
+  var args = Array.prototype.slice.call(arguments);
+  args.length = 3;
 
-  Segment.prototype.getSegmentUID = function(callbackFn) {
-    cordova.exec(function(result) {
-        callbackFn(result);
-      }, null,
-      "SegmentPlugin",
-      "getSegmentUID", []);
-  };
+  exec(null, null, "AnalyticsPlugin", "track", args);
+};
 
-  Segment.prototype.trackEvent = function(eventName, eventValues) {
-    cordova.exec(null, null, "SegmentPlugin", "trackEvent", [eventName, eventValues]);
-  };
 
-  Segment.prototype.onInstallConversionDataLoaded = function(conversionData) {
-    var data = conversionData;
-    if (typeof data === "string") {
-      data = JSON.parse(conversionData);
-    }
-    global.Segment._conversionData = data;
+// alias `screen` as `page` for consistent with Analytics.js interface
+analytics.screen = analytics.page = function() {
+  var args = Array.prototype.slice.call(arguments);
+  args.length = 4;
 
-    if (global.Segment._cbFuncConversionData) {
-      global.Segment._cbFuncConversionData(global.Segment._conversionData);
-    }
-  };
+  if (typeof args[1] !== 'string') {
+    args.unshift(null);
+    args = args.slice(0, 4);
+  }
 
-  Segment.prototype.setCallbackConversionData = function(callbackFn) {
-    global.Segment._cbFuncConversionData = callbackFn;
+  exec(null, null, "AnalyticsPlugin", "screen", args);
+};
 
-    if (global.Segment._conversionData) {
-      global.Segment._cbFuncConversionData(global.Segment._conversionData);
-    }
-  };
+analytics.alias = function() {
+  var args = Array.prototype.slice.call(arguments);
+  args.length = 2;
 
-  global.cordova.addConstructor(function() {
-    if (!global.Cordova) {
-      global.Cordova = global.cordova;
-    };
+  exec(null, null, "AnalyticsPlugin", "alias", args);
+};
 
-    if (!global.plugins) {
-      global.plugins = {};
-    }
+analytics.reset = function() {
+  exec(null, null, "AnalyticsPlugin", "reset", []);
+};
 
-    global.Segment = new Segment();
-  });
-}(window));
+analytics.flush = function() {
+  exec(null, null, "AnalyticsPlugin", "flush", []);
+};
+
+analytics.getSnapshot = function(callbackFn) {
+  exec(function(result) {
+    callbackFn(result);
+  }, null, "AnalyticsPlugin", "getSnapshot", []);
+};
+
+module.exports = analytics;
