@@ -1,4 +1,8 @@
 module.exports = function(ctx) {
+  if (ctx.opts.platforms.indexOf('android') < 0) {
+    return;
+  }
+
   var fs = ctx.requireCordovaModule('fs');
   var path = ctx.requireCordovaModule('path');
 
@@ -9,9 +13,8 @@ module.exports = function(ctx) {
 
   try {
     analyticsIntegrations = fs.readFileSync(path.join(platformRoot, fileName));
+    fs.writeFileSync(path.join(__dirname, '../src/android', fileName), analyticsIntegrations);
   } catch (e) {
     console.error(e);
   }
-
-  fs.writeFileSync(path.join(platformRoot, fileName), analyticsIntegrations || '');
 };
