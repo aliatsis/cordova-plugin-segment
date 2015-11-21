@@ -1,5 +1,0 @@
-dependencies {
-  compile('com.segment.analytics.android:analytics-core:+') {
-    transitive = true
-  }
-}
