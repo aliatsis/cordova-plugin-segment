@@ -64,7 +64,7 @@
         <source-file src="src/android/AnalyticsPlugin.java" target-dir="src/com/segment/analytics/cordova"/>
         
         <framework src="src/android/coreAnalytics.gradle" custom="true" type="gradleReference"/>
-        <!-- <framework src="src/android/analyticsIntegrations.gradle" custom="true" type="gradleReference"/> -->
+        <framework src="src/android/analyticsIntegrations.gradle" custom="true" type="gradleReference"/>
     </platform>
 
 <!--     <platform name="ios">
