@@ -34,7 +34,7 @@
         <clobbers target="analytics" />
     </js-module>
     <platform name="android">
-        <hook type="before_plugin_install" src="hooks/before_plugin_install.js" />
+        <!-- <hook type="before_plugin_install" src="hooks/before_plugin_install.js" /> -->
 
         <config-file target="res/xml/config.xml" parent="/*">
             <feature name="AnalyticsPlugin">
@@ -64,7 +64,7 @@
         <source-file src="src/android/AnalyticsPlugin.java" target-dir="src/com/segment/analytics/cordova"/>
         
         <framework src="src/android/coreAnalytics.gradle" custom="true" type="gradleReference"/>
-        <framework src="src/android/analyticsIntegrations.gradle" custom="true" type="gradleReference"/>
+        <!-- <framework src="src/android/analyticsIntegrations.gradle" custom="true" type="gradleReference"/> -->
     </platform>
 
 <!--     <platform name="ios">
