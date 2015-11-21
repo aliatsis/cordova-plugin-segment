@@ -34,10 +34,6 @@
         <clobbers target="analytics" />
     </js-module>
     <platform name="android">
-        <framework src="com.segment.analytics.android:analytics-core:+"/>
-        <framework src="com.segment.analytics.android:analytics-integration-google-analytics:+"/>
-        <framework src="com.segment.analytics.android:analytics-integration-mixpanel:+"/>
-
         <config-file target="res/xml/config.xml" parent="/*">
             <feature name="AnalyticsPlugin">
                 <param name="android-package" value="com.segment.analytics.cordova.AnalyticsPlugin"/>
@@ -63,6 +59,8 @@
             <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE"/>
         </config-file>
 
+        <framework src="com.segment.analytics.android:analytics-core:+"/>
+        
         <source-file src="src/android/AnalyticsPlugin.java" target-dir="src/com/segment/analytics/cordova"/>
     </platform>
 
