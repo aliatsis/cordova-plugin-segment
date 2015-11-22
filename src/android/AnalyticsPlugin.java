@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 public class AnalyticsPlugin extends CordovaPlugin {
 
@@ -164,11 +165,11 @@ public class AnalyticsPlugin extends CordovaPlugin {
 
     private Traits makeTraitsFromJSON(JSONObject json) {
         Traits traits = new Traits();
-        HashMap<String, Object> traitMap = jsonToMap(json);
+        Map<String, Object> traitMap = mapFromJSON(json);
 
         if (traitMap != null) {
             if (traitMap.get("address") != null) {
-                traitMap.put("address", new Address((HashMap<String, Object>) traitMap.get("address")));
+                traitMap.put("address", new Address((Map<String, Object>) traitMap.get("address")));
             }
 
             traits.putAll(traitMap);
@@ -179,15 +180,15 @@ public class AnalyticsPlugin extends CordovaPlugin {
 
     private Properties makePropertiesFromJSON(JSONObject json) {
         Properties properties = new Properties();
-        HashMap<String, Object> propertiesMap = jsonToMap(json);
+        Map<String, Object> propertiesMap = mapFromJSON(json);
 
         if (propertiesMap != null) {
-            List<HashMap<String, Object>> rawProducts = (List<HashMap<String, Object>>) propertiesMap.get("products");
+            List<Map<String, Object>> rawProducts = (List<Map<String, Object>>) propertiesMap.get("products");
 
             if (rawProducts != null) {
                 List<Product> products = new ArrayList<Product>();
 
-                for (HashMap<String, Object> rawProduct : rawProducts) {
+                for (Map<String, Object> rawProduct : rawProducts) {
                     Product product = new Product(
                         (String) rawProduct.get("id"),
                         (String) rawProduct.get("sku"),
@@ -207,53 +208,39 @@ public class AnalyticsPlugin extends CordovaPlugin {
         return properties;
     }
 
-    public static HashMap<String, Object> jsonToMap(JSONObject json) {
-        HashMap<String, Object> retMap = new HashMap<String, Object>();
-
-        try {
-            if (json != JSONObject.NULL) {
-                retMap = toMap(json);
-            }
-        } catch(JSONException e) {
-            e.printStackTrace();
+    private static Map<String, Object> mapFromJSON(JSONObject jsonObject) {
+        if (jsonObject == null) {
+            return null;
         }
-
-        return retMap;
-    }
-
-    public static HashMap<String, Object> toMap(JSONObject object) throws JSONException {
-        HashMap<String, Object> map = new HashMap<String, Object>();
-
-        Iterator<String> keysItr = object.keys();
-        while(keysItr.hasNext()) {
-            String key = keysItr.next();
-            Object value = object.get(key);
-
-            if(value instanceof JSONArray) {
-                value = toList((JSONArray) value);
+        Map<String, Object> map = new HashMap<String, Object>();
+        Iterator<String> keysIter = jsonObject.keys();
+        while (keysIter.hasNext()) {
+            String key = keysIter.next();
+            Object value = getObject(jsonObject.opt(key));
+            if (value != null) {
+                map.put(key, value);
             }
-
-            else if(value instanceof JSONObject) {
-                value = toMap((JSONObject) value);
-            }
-            map.put(key, value);
         }
         return map;
     }
 
-    public static List<Object> toList(JSONArray array) throws JSONException {
+    private static List<Object> listFromJSON(JSONArray jsonArray) {
         List<Object> list = new ArrayList<Object>();
-        for(int i = 0; i < array.length(); i++) {
-            Object value = array.get(i);
-            if(value instanceof JSONArray) {
-                value = toList((JSONArray) value);
+        for (int i = 0, count = jsonArray.length(); i < count; i++) {
+            Object value = getObject(jsonArray.opt(i));
+            if (value != null) {
+                list.add(value);
             }
-
-            else if(value instanceof JSONObject) {
-                value = toMap((JSONObject) value);
-            }
-            list.add(value);
         }
         return list;
+    }
+
+    private static Object getObject(Object value) {
+        if (value instanceof JSONObject) {
+            value = mapFromJSON((JSONObject) value);
+        } else if (value instanceof JSONArray) {
+            value = listFromJSON((JSONArray) value);
+        }
+        return value;
     }
 }
