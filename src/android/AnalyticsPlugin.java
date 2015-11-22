@@ -95,7 +95,7 @@ public class AnalyticsPlugin extends CordovaPlugin {
 
     private void identify(JSONArray args) {
         analytics.with(cordova.getActivity().getApplicationContext()).identify(
-            args.optString(0),
+            optArgString(args, 0),
             makeTraitsFromJSON(args.optJSONObject(1)),
             null // passing options is deprecated
         );
@@ -103,33 +103,33 @@ public class AnalyticsPlugin extends CordovaPlugin {
 
     private void group(JSONArray args) {
         analytics.with(cordova.getActivity().getApplicationContext()).group(
-            args.optString(0),
-            makeTraitsFromJSON(args.optJSONObject(1)),
-            null // passing options is deprecated
+                optArgString(args, 0),
+                makeTraitsFromJSON(args.optJSONObject(1)),
+                null // passing options is deprecated
         );
     }
 
     private void track(JSONArray args) {
         analytics.with(cordova.getActivity().getApplicationContext()).track(
-            args.optString(0),
-            makePropertiesFromJSON(args.optJSONObject(1)),
-            null // passing options is deprecated
+                optArgString(args, 0),
+                makePropertiesFromJSON(args.optJSONObject(1)),
+                null // passing options is deprecated
         );
     }
 
     private void screen(JSONArray args) {
         analytics.with(cordova.getActivity().getApplicationContext()).screen(
-            args.optString(0),
-            args.optString(1),
-            makePropertiesFromJSON(args.optJSONObject(2)),
-            null // passing options is deprecated
+                optArgString(args, 0),
+                optArgString(args, 1),
+                makePropertiesFromJSON(args.optJSONObject(2)),
+                null // passing options is deprecated
         );
     }
 
     private void alias(JSONArray args) {
         analytics.with(cordova.getActivity().getApplicationContext()).alias(
-            args.optString(0),
-            null // passing options is deprecated
+                optArgString(args, 0),
+                null // passing options is deprecated
         );
     }
 
@@ -168,7 +168,7 @@ public class AnalyticsPlugin extends CordovaPlugin {
         Map<String, Object> traitMap = mapFromJSON(json);
 
         if (traitMap != null) {
-            if (traitMap.get("address") != null) {
+            if (traitMap.get("address") != JSONObject.NULL) {
                 traitMap.put("address", new Address((Map<String, Object>) traitMap.get("address")));
             }
 
@@ -242,5 +242,10 @@ public class AnalyticsPlugin extends CordovaPlugin {
             value = listFromJSON((JSONArray) value);
         }
         return value;
+    }
+
+    public static String optArgString(JSONArray args, int index)
+    {
+        return args.isNull(index) ? null :args.optString(index);
     }
 }
