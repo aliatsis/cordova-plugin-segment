@@ -59,7 +59,7 @@ public class AnalyticsPlugin extends CordovaPlugin {
     }
 
     @Override
-    public boolean execute(final String action, final JSONArray args, final CallbackContext callbackContext) throws JSONException {
+    public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
         if (analytics == null) {
             Log.e(TAG, "Error initializing");
             return false;

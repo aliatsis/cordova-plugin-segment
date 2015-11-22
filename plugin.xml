@@ -30,7 +30,7 @@
     <engines>
         <engine name="cordova" version=">=3.8.0"/>
     </engines>
-    <js-module src="www/segment.js" name="segment">
+    <js-module src="www/analytics.js" name="analytics">
         <clobbers target="analytics" />
     </js-module>
     <platform name="android">
