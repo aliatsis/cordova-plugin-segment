@@ -25,7 +25,7 @@
     <name>cordova-plugin-segment</name>
     <description>Cordova Plugin Segment</description>
     <license>Apache 2.0</license>
-    <keywords>cordova,appsflyer</keywords>
+    <keywords>cordova,segment,analytics</keywords>
     <repo>https://github.com/aliatsis/cordova-plugin-segment.git</repo>
     <engines>
         <engine name="cordova" version=">=3.8.0"/>
@@ -37,8 +37,10 @@
         <config-file target="res/xml/config.xml" parent="/*">
             <feature name="AnalyticsPlugin">
                 <param name="android-package" value="com.segment.analytics.cordova.AnalyticsPlugin"/>
+                <param name="onload" value="true"/>
             </feature>
             <preference name="analytics_write_key"/>
+            <preference name="analytics_debug_write_key"/>
         </config-file>
 
         <config-file target="AndroidManifest.xml" parent="/manifest">
@@ -60,7 +62,7 @@
         </config-file>
 
         <framework src="com.segment.analytics.android:analytics-core:+"/>
-        
+
         <source-file src="src/android/AnalyticsPlugin.java" target-dir="src/com/segment/analytics/cordova"/>
     </platform>
 

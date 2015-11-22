@@ -12,7 +12,9 @@ import com.segment.analytics.Traits.Address;
 
 import org.apache.cordova.BuildConfig;
 import org.apache.cordova.CallbackContext;
+import org.apache.cordova.CordovaInterface;
 import org.apache.cordova.CordovaPlugin;
+import org.apache.cordova.CordovaWebView;
 import org.apache.cordova.PluginResult;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -26,10 +28,10 @@ import java.util.concurrent.ConcurrentHashMap;
 public class AnalyticsPlugin extends CordovaPlugin {
 
     private static final String TAG = "AnalyticsPlugin";
-    private final Analytics analytics;
-    private final String writeKey;
+    private Analytics analytics;
+    private String writeKey;
 
-    public AnalyticsPlugin () {
+    @Override protected void pluginInitialize() {
         String writeKeyPreferenceName;
         LogLevel logLevel;
 
