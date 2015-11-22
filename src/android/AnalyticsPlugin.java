@@ -168,7 +168,7 @@ public class AnalyticsPlugin extends CordovaPlugin {
         Map<String, Object> traitMap = mapFromJSON(json);
 
         if (traitMap != null) {
-            if (traitMap.get("address") != JSONObject.NULL) {
+            if (traitMap.get("address") != null) {
                 traitMap.put("address", new Address((Map<String, Object>) traitMap.get("address")));
             }
 
@@ -190,9 +190,9 @@ public class AnalyticsPlugin extends CordovaPlugin {
 
                 for (Map<String, Object> rawProduct : rawProducts) {
                     Product product = new Product(
-                        (String) rawProduct.get("id"),
-                        (String) rawProduct.get("sku"),
-                        (Double) rawProduct.get("price")
+                        rawProduct.get("id") == null ? "" : (String) rawProduct.get("id"),
+                        rawProduct.get("sku") == null ? "" : (String) rawProduct.get("sku"),
+                        rawProduct.get("price") == null ? 0d : Double.valueOf(rawProduct.get("price").toString())
                     );
 
                     product.putAll(rawProduct);
@@ -216,7 +216,8 @@ public class AnalyticsPlugin extends CordovaPlugin {
         Iterator<String> keysIter = jsonObject.keys();
         while (keysIter.hasNext()) {
             String key = keysIter.next();
-            Object value = getObject(jsonObject.opt(key));
+            Object value = jsonObject.isNull(key) ? null : getObject(jsonObject.opt(key));
+
             if (value != null) {
                 map.put(key, value);
             }
