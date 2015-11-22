@@ -12,18 +12,16 @@ import com.segment.analytics.Traits.Address;
 
 import org.apache.cordova.BuildConfig;
 import org.apache.cordova.CallbackContext;
-import org.apache.cordova.CordovaInterface;
 import org.apache.cordova.CordovaPlugin;
-import org.apache.cordova.CordovaWebView;
 import org.apache.cordova.PluginResult;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class AnalyticsPlugin extends CordovaPlugin {
 
@@ -50,8 +48,8 @@ public class AnalyticsPlugin extends CordovaPlugin {
             Log.e(TAG, "Invalid write key: " + writeKey);
         } else {
             analytics = new Analytics.Builder(
-                    cordova.getActivity().getApplicationContext(),
-                    writeKey
+                cordova.getActivity().getApplicationContext(),
+                writeKey
             ).logLevel(logLevel).build();
 
             Analytics.setSingletonInstance(analytics);
@@ -95,63 +93,43 @@ public class AnalyticsPlugin extends CordovaPlugin {
     }
 
     private void identify(JSONArray args) {
-        try{
-            analytics.with(cordova.getActivity().getApplicationContext()).identify(
-                args.getString(0),
-                makeTraitsFromJSON(args.getJSONObject(1)),
-                null // passing options is deprecated
-            );
-        } catch(JSONException e) {
-            e.printStackTrace();
-        }
+        analytics.with(cordova.getActivity().getApplicationContext()).identify(
+            args.optString(0),
+            makeTraitsFromJSON(args.optJSONObject(1)),
+            null // passing options is deprecated
+        );
     }
 
     private void group(JSONArray args) {
-        try{
-            analytics.with(cordova.getActivity().getApplicationContext()).group(
-                    args.getString(0),
-                    makeTraitsFromJSON(args.getJSONObject(1)),
-                    null // passing options is deprecated
-            );
-        } catch(JSONException e) {
-            e.printStackTrace();
-        }
+        analytics.with(cordova.getActivity().getApplicationContext()).group(
+            args.optString(0),
+            makeTraitsFromJSON(args.optJSONObject(1)),
+            null // passing options is deprecated
+        );
     }
 
     private void track(JSONArray args) {
-        try{
-            analytics.with(cordova.getActivity().getApplicationContext()).track(
-                    args.getString(0),
-                    makePropertiesFromJSON(args.getJSONObject(1)),
-                    null // passing options is deprecated
-            );
-        } catch(JSONException e) {
-            e.printStackTrace();
-        }
+        analytics.with(cordova.getActivity().getApplicationContext()).track(
+            args.optString(0),
+            makePropertiesFromJSON(args.optJSONObject(1)),
+            null // passing options is deprecated
+        );
     }
 
     private void screen(JSONArray args) {
-        try{
-            analytics.with(cordova.getActivity().getApplicationContext()).screen(
-                    args.getString(0),
-                    args.getString(1),
-                    makePropertiesFromJSON(args.getJSONObject(2)),
-                    null // passing options is deprecated
-            );
-        } catch(JSONException e) {
-            e.printStackTrace();
-        }
+        analytics.with(cordova.getActivity().getApplicationContext()).screen(
+            args.optString(0),
+            args.optString(1),
+            makePropertiesFromJSON(args.optJSONObject(2)),
+            null // passing options is deprecated
+        );
     }
 
     private void alias(JSONArray args) {
-        try{
-            analytics.with(cordova.getActivity().getApplicationContext()).alias(
-                    args.getString(0),
-                    null // passing options is deprecated
-            );
-        } catch(JSONException e) {
-            e.printStackTrace();
-        }
+        analytics.with(cordova.getActivity().getApplicationContext()).alias(
+            args.optString(0),
+            null // passing options is deprecated
+        );
     }
 
     private void reset() {
@@ -186,11 +164,11 @@ public class AnalyticsPlugin extends CordovaPlugin {
 
     private Traits makeTraitsFromJSON(JSONObject json) {
         Traits traits = new Traits();
-        ConcurrentHashMap<String, Object> traitMap = jsonToMap(json);
+        HashMap<String, Object> traitMap = jsonToMap(json);
 
         if (traitMap != null) {
             if (traitMap.get("address") != null) {
-                traitMap.put("address", new Address((ConcurrentHashMap<String, Object>) traitMap.get("address")));
+                traitMap.put("address", new Address((HashMap<String, Object>) traitMap.get("address")));
             }
 
             traits.putAll(traitMap);
@@ -201,15 +179,15 @@ public class AnalyticsPlugin extends CordovaPlugin {
 
     private Properties makePropertiesFromJSON(JSONObject json) {
         Properties properties = new Properties();
-        ConcurrentHashMap<String, Object> propertiesMap = jsonToMap(json);
+        HashMap<String, Object> propertiesMap = jsonToMap(json);
 
         if (propertiesMap != null) {
-            List<ConcurrentHashMap<String, Object>> rawProducts = (List<ConcurrentHashMap<String, Object>>) propertiesMap.get("products");
+            List<HashMap<String, Object>> rawProducts = (List<HashMap<String, Object>>) propertiesMap.get("products");
 
             if (rawProducts != null) {
                 List<Product> products = new ArrayList<Product>();
 
-                for (ConcurrentHashMap<String, Object> rawProduct : rawProducts) {
+                for (HashMap<String, Object> rawProduct : rawProducts) {
                     Product product = new Product(
                         (String) rawProduct.get("id"),
                         (String) rawProduct.get("sku"),
@@ -229,8 +207,8 @@ public class AnalyticsPlugin extends CordovaPlugin {
         return properties;
     }
 
-    public static ConcurrentHashMap<String, Object> jsonToMap(JSONObject json) {
-        ConcurrentHashMap<String, Object> retMap = new ConcurrentHashMap<String, Object>();
+    public static HashMap<String, Object> jsonToMap(JSONObject json) {
+        HashMap<String, Object> retMap = new HashMap<String, Object>();
 
         try {
             if (json != JSONObject.NULL) {
@@ -243,8 +221,8 @@ public class AnalyticsPlugin extends CordovaPlugin {
         return retMap;
     }
 
-    public static ConcurrentHashMap<String, Object> toMap(JSONObject object) throws JSONException {
-        ConcurrentHashMap<String, Object> map = new ConcurrentHashMap<String, Object>();
+    public static HashMap<String, Object> toMap(JSONObject object) throws JSONException {
+        HashMap<String, Object> map = new HashMap<String, Object>();
 
         Iterator<String> keysItr = object.keys();
         while(keysItr.hasNext()) {
