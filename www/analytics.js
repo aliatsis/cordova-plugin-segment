@@ -11,21 +11,21 @@ analytics.identify = function() {
     args = args.slice(0, 3);
   }
 
-  exec(null, null, "AnalyticsPlugin", "identify", args);
+  exec(null, null, 'AnalyticsPlugin', 'identify', args);
 };
 
 analytics.group = function() {
   var args = Array.prototype.slice.call(arguments);
   args.length = 3;
 
-  exec(null, null, "AnalyticsPlugin", "group", args);
+  exec(null, null, 'AnalyticsPlugin', 'group', args);
 };
 
 analytics.track = function() {
   var args = Array.prototype.slice.call(arguments);
   args.length = 3;
 
-  exec(null, null, "AnalyticsPlugin", "track", args);
+  exec(null, null, 'AnalyticsPlugin', 'track', args);
 };
 
 
@@ -39,28 +39,35 @@ analytics.screen = analytics.page = function() {
     args = args.slice(0, 4);
   }
 
-  exec(null, null, "AnalyticsPlugin", "screen", args);
+  exec(null, null, 'AnalyticsPlugin', 'screen', args);
 };
 
 analytics.alias = function() {
   var args = Array.prototype.slice.call(arguments);
   args.length = 2;
 
-  exec(null, null, "AnalyticsPlugin", "alias", args);
+  exec(null, null, 'AnalyticsPlugin', 'alias', args);
 };
 
 analytics.reset = function() {
-  exec(null, null, "AnalyticsPlugin", "reset", []);
+  exec(null, null, 'AnalyticsPlugin', 'reset', []);
 };
 
 analytics.flush = function() {
-  exec(null, null, "AnalyticsPlugin", "flush", []);
+  exec(null, null, 'AnalyticsPlugin', 'flush', []);
 };
 
 analytics.getSnapshot = function(callbackFn) {
   exec(function(result) {
     callbackFn(result);
-  }, null, "AnalyticsPlugin", "getSnapshot", []);
+  }, null, 'AnalyticsPlugin', 'getSnapshot', []);
+};
+
+// not documented, but usefull to get the Traits from the application context
+analytics.getTraits = function(callbackFn) {
+  exec(function(result) {
+    callbackFn(result || {});
+  }, null, 'AnalyticsPlugin', 'getTraits', []);
 };
 
 module.exports = analytics;
