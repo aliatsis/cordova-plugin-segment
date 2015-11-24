@@ -27,7 +27,7 @@
     <license>Apache 2.0</license>
     <keywords>cordova,segment,analytics</keywords>
     <repo>https://github.com/aliatsis/cordova-plugin-segment.git</repo>
-    
+
     <engines>
         <engine name="cordova" version=">=3.8.0"/>
     </engines>
@@ -71,7 +71,7 @@
     </platform>
 
     <platform name="ios">
-        <header-file src="platform/ios/AnalyticsPlugin.h" />
-        <source-file src="platform/ios/AnalyticsPlugin.m" />
+        <header-file src="src/ios/AnalyticsPlugin.h" />
+        <source-file src="src/ios/AnalyticsPlugin.m" />
     </platform>
 </plugin>
