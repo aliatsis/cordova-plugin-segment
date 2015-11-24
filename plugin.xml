@@ -66,18 +66,17 @@
         <source-file src="src/android/AnalyticsPlugin.java" target-dir="src/com/segment/analytics/cordova"/>
     </platform>
 
-<!--     <platform name="ios">
+    <platform name="ios">
         <config-file target="config.xml" parent="/*">
-            <feature name="AppsFlyerPlugin">
-                <param name="ios-package" value="AppsFlyerPlugin" />
+            <feature name="AnalyticsPlugin">
+                <param name="ios-package" value="AnalyticsPlugin" />
+                <param name="onload" value="true" />
             </feature>
+            <preference name="analytics_write_key"/>
+            <preference name="analytics_debug_write_key"/>
         </config-file>
 
-        <header-file src="platform/ios/AppsFlyerPlugin.h" />
-        <header-file src="platform/ios/AppsFlyerTracker.h" />
-        <source-file src="platform/ios/AppsFlyerPlugin.m" />
-        <source-file src="platform/ios/libAppsFlyerLib.a" compiler-flags="-lAppsFlyerLib" framework="true" />
-        <framework src="AdSupport.framework" weak="true" />
-        <framework src="iAd.framework" weak="true" />
-    </platform> -->
+        <header-file src="platform/ios/AnalyticsPlugin.h" />
+        <source-file src="platform/ios/AnalyticsPlugin.m" />
+    </platform>
 </plugin>
