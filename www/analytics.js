@@ -57,17 +57,21 @@ analytics.flush = function() {
   exec(null, null, 'AnalyticsPlugin', 'flush', []);
 };
 
+// iOS only
+analytics.enable = function() {
+  exec(null, null, 'AnalyticsPlugin', 'enable', []);
+};
+
+// iOS only
+analytics.disable = function() {
+  exec(null, null, 'AnalyticsPlugin', 'disable', []);
+};
+
+// android only
 analytics.getSnapshot = function(callbackFn) {
   exec(function(result) {
     callbackFn(result);
   }, null, 'AnalyticsPlugin', 'getSnapshot', []);
-};
-
-// not documented, but usefull to get the Traits from the application context
-analytics.getTraits = function(callbackFn) {
-  exec(function(result) {
-    callbackFn(result || {});
-  }, null, 'AnalyticsPlugin', 'getTraits', []);
 };
 
 module.exports = analytics;

@@ -88,9 +88,6 @@ public class AnalyticsPlugin extends CordovaPlugin {
         } else if ("getSnapshot".equals(action)) {
             getSnapshot(callbackContext);
             return true;
-        } else if ("getTraits".equals(action)) {
-            getTraits(callbackContext);
-            return true;
         }
 
         return false;
@@ -164,13 +161,6 @@ public class AnalyticsPlugin extends CordovaPlugin {
             e.printStackTrace();
             return;
         }
-    }
-
-    private void getTraits(CallbackContext callbackContext) {
-        JSONObject traitsJSON = new JSONObject(analytics.getAnalyticsContext().traits());
-        PluginResult r = new PluginResult(PluginResult.Status.OK, traitsJSON);
-        r.setKeepCallback(false);
-        callbackContext.sendPluginResult(r);
     }
 
     private Traits makeTraitsFromJSON(JSONObject json) {
