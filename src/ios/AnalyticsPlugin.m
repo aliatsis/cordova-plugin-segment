@@ -34,7 +34,7 @@
         configuration.shouldUseLocationServices = [useLocationServices boolValue];
         [SEGAnalytics setupWithConfiguration:configuration];
     } else {
-        NSLog([NSString stringWithFormat:@"[cordova-plugin-segment] ERROR - Invalid write key: %@", writeKey]);
+        NSLog(@"[cordova-plugin-segment] ERROR - Invalid write key");
     }
 }
 
