@@ -42,39 +42,39 @@
 
 - (void)identify:(CDVInvokedUrlCommand*)command
 {
-    NSString* userId = command.arguments[0];
-    NSDictionary* traits = command.arguments[1];
+    NSString* userId = [command.arguments objectAtIndex:0];
+    NSDictionary* traits = [command.arguments objectAtIndex:1];
     
     [[SEGAnalytics sharedAnalytics] identify:userId traits:traits];
 }
 
 - (void)group:(CDVInvokedUrlCommand*)command
 {
-    NSString* groupId = command.arguments[0];
-    NSDictionary* traits = command.arguments[1];
+    NSString* groupId = [command.arguments objectAtIndex:0];
+    NSDictionary* traits = [command.arguments objectAtIndex:1];
     
     [[SEGAnalytics sharedAnalytics] group:groupId traits:traits];
 }
 
 - (void)track:(CDVInvokedUrlCommand*)command
 {
-    NSString* event = command.arguments[0];
-    NSDictionary* properties = command.arguments[1];
+    NSString* event = [command.arguments objectAtIndex:0];
+    NSDictionary* properties = [command.arguments objectAtIndex:1];
     
     [[SEGAnalytics sharedAnalytics] track:event properties:properties];
 }
 
 - (void)screen:(CDVInvokedUrlCommand*)command
 {
-    NSString* name = command.arguments[0];
-    NSDictionary* properties = command.arguments[1];
+    NSString* name = [command.arguments objectAtIndex:0];
+    NSDictionary* properties = [command.arguments objectAtIndex:1];
     
     [[SEGAnalytics sharedAnalytics] screen:name properties:properties];
 }
 
 - (void)alias:(CDVInvokedUrlCommand*)command
 {
-    NSString* newId = command.arguments[0];
+    NSString* newId = [command.arguments objectAtIndex:0];
     
     [[SEGAnalytics sharedAnalytics] alias:newId];
 }
