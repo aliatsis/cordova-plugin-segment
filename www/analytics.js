@@ -4,49 +4,42 @@ var analytics = {};
 
 analytics.identify = function() {
   var args = Array.prototype.slice.call(arguments);
-  args.length = 3;
 
   if (typeof args[0] !== 'string') {
     args.unshift(null);
-    args = args.slice(0, 3);
   }
 
-  exec(null, null, 'AnalyticsPlugin', 'identify', args);
+  exec(null, null, 'AnalyticsPlugin', 'identify', getNArgs(args, 3));
 };
 
 analytics.group = function() {
   var args = Array.prototype.slice.call(arguments);
-  args.length = 3;
 
-  exec(null, null, 'AnalyticsPlugin', 'group', args);
+  exec(null, null, 'AnalyticsPlugin', 'group', getNArgs(args, 3));
 };
 
 analytics.track = function() {
   var args = Array.prototype.slice.call(arguments);
-  args.length = 3;
 
-  exec(null, null, 'AnalyticsPlugin', 'track', args);
+  exec(null, null, 'AnalyticsPlugin', 'track', getNArgs(args, 3));
 };
 
 
 // alias `screen` as `page` for consistent with Analytics.js interface
 analytics.screen = analytics.page = function() {
   var args = Array.prototype.slice.call(arguments);
-  args.length = 4;
 
   if (typeof args[1] !== 'string') {
     args.unshift(null);
-    args = args.slice(0, 4);
   }
 
-  exec(null, null, 'AnalyticsPlugin', 'screen', args);
+  exec(null, null, 'AnalyticsPlugin', 'screen', getNArgs(args, 4));
 };
 
 analytics.alias = function() {
   var args = Array.prototype.slice.call(arguments);
-  args.length = 2;
 
-  exec(null, null, 'AnalyticsPlugin', 'alias', args);
+  exec(null, null, 'AnalyticsPlugin', 'alias', getNArgs(args, 2));
 };
 
 analytics.reset = function() {
@@ -73,5 +66,16 @@ analytics.getSnapshot = function(callbackFn) {
     callbackFn(result);
   }, null, 'AnalyticsPlugin', 'getSnapshot', []);
 };
+
+function getNArgs(args, n) {
+  var result = [];
+  args = args || [];
+
+  for (var i = 0; i < n; i++) {
+    result[i] = args[i] === undefined ? null : args[i];
+  }
+
+  return result;
+}
 
 module.exports = analytics;
