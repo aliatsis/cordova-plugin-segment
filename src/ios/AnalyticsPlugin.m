@@ -44,6 +44,10 @@
 {
     NSString* userId = [command.arguments objectAtIndex:0];
     NSDictionary* traits = [command.arguments objectAtIndex:1];
+
+    if (traits == (id)[NSNull null]) {
+        traits = nil;
+    }
     
     [[SEGAnalytics sharedAnalytics] identify:userId traits:traits];
 }
@@ -52,6 +56,10 @@
 {
     NSString* groupId = [command.arguments objectAtIndex:0];
     NSDictionary* traits = [command.arguments objectAtIndex:1];
+
+    if (traits == (id)[NSNull null]) {
+        traits = nil;
+    }
     
     [[SEGAnalytics sharedAnalytics] group:groupId traits:traits];
 }
@@ -60,6 +68,10 @@
 {
     NSString* event = [command.arguments objectAtIndex:0];
     NSDictionary* properties = [command.arguments objectAtIndex:1];
+
+    if (properties == (id)[NSNull null]) {
+        properties = nil;
+    }
     
     [[SEGAnalytics sharedAnalytics] track:event properties:properties];
 }
@@ -68,6 +80,10 @@
 {
     NSString* name = [command.arguments objectAtIndex:0];
     NSDictionary* properties = [command.arguments objectAtIndex:1];
+
+    if (properties == (id)[NSNull null]) {
+        properties = nil;
+    }
     
     [[SEGAnalytics sharedAnalytics] screen:name properties:properties];
 }
