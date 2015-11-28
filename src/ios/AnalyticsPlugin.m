@@ -2,7 +2,7 @@
 #import <Cordova/CDV.h>
 // #import <Analytics.h>
 
-@implementation AnalyticsPlugin
+@implementation AnalyticsPlugin : CDVPlugin
 
 - (void)pluginInitialize
 {
