@@ -30,6 +30,8 @@
         </config-file>
 
         <config-file target="AndroidManifest.xml" parent="/manifest">
+            <uses-permission android:name="android.permission.INTERNET" />
+            
             <!-- Recommended by us and most bundled integrations. -->
             <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
