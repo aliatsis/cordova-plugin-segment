@@ -15,6 +15,10 @@ analytics.identify = function() {
 analytics.group = function() {
   var args = Array.prototype.slice.call(arguments);
 
+  if (typeof args[0] !== 'string') {
+    args.unshift(null);
+  }
+
   exec(null, null, 'AnalyticsPlugin', 'group', getNArgs(args, 3));
 };
 
