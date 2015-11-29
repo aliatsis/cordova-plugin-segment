@@ -1,0 +1,22 @@
+{
+  "name": "cordova-plugin-segment",
+  "version": "0.1.0",
+  "description": "Cordova plugin for Segment Analytics",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aliatsis/cordova-plugin-segment.git"
+  },
+  "keywords": [
+    "ecosystem:cordova",
+    "cordova",
+    "segment",
+    "analytics",
+    "attribution"
+  ],
+  "author": "Anthony Liatsis <anthony.liatsis@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/aliatsis/cordova-plugin-segment/issues"
+  },
+  "homepage": "https://github.com/aliatsis/cordova-plugin-segment#readme"
+}
