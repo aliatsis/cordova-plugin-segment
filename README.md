@@ -7,12 +7,12 @@ Supports Segment's iOS and Android SDKs.
 ##Usage
 Implements (mostly) the same API interface on `window.analytics` as [Analytics.js][].
 
-##iOS Setup
+##iOS Integrations Setup
 Use CocoaPods:
 The default plugin configuration does not bundle any Segment integrations or core analytics SDKs.
 To add more your custom integrations, create a `Podfile` file in your iOS platform root directory and add your segment integration dependencies. See the [iOS Quickstart][] for examples.
 
-##Android Setup
+##Android Integrations Setup
 Use Gradle:
 By default, the plugin builds with the `analytics-core` SDK for Android.
 To add more your custom integrations, create a `build-extras.gradle` file in your Android platform root directory and add your segment integration dependencies. See the [Android Custom Build Docs][] for examples.
