@@ -7,6 +7,11 @@ Supports Segment's iOS and Android SDKs.
 ##Usage
 Implements (mostly) the same API interface on `window.analytics` as [Analytics.js][].
 
+##Segment Write Keys
+In config.xml, you can put the following preferences:
+* \<preference name="analytics_write_key" value="{Segment write key}" />
+* \<preference name="analytics_debug_write_key" value="{Segment write key}" />
+
 ##iOS Integrations Setup
 Use CocoaPods:
 The default plugin configuration does not bundle any Segment integrations or core analytics SDKs.
