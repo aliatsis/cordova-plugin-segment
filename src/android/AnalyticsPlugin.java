@@ -51,7 +51,10 @@ public class AnalyticsPlugin extends CordovaPlugin {
             analytics = new Analytics.Builder(
                 cordova.getActivity().getApplicationContext(),
                 writeKey
-            ).logLevel(logLevel).build();
+            ).logLevel(logLevel)
+                .collectDeviceId(true)
+                .trackApplicationLifecycleEvents()
+                .build();
 
             Analytics.setSingletonInstance(analytics);
         }
