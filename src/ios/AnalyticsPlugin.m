@@ -1,6 +1,6 @@
 #import "AnalyticsPlugin.h"
 #import <Cordova/CDV.h>
-#import <Analytics.h>
+#import <Analytics/SEGAnalytics.h>
 
 @implementation AnalyticsPlugin : CDVPlugin
 
@@ -15,7 +15,7 @@
 {
     NSString* writeKeyPreferenceName;
     NSString* writeKeyPListName;
-    
+
     //Get app credentials from config.xml or the info.plist if they can't be found
     #ifdef DEBUG
         [SEGAnalytics debug:YES];
@@ -26,9 +26,9 @@
         writeKeyPreferenceName = @"analytics_write_key";
         writeKeyPListName = @"AnalyticsWriteKey";
     #endif
-    
+
     NSString* writeKey = self.commandDelegate.settings[writeKeyPreferenceName] ?: [[NSBundle mainBundle] objectForInfoDictionaryKey:writeKeyPListName];
-    
+
     if (writeKey.length) {
         NSString* useLocationServices = self.commandDelegate.settings[@"analytics_use_location_services"] ?: [[NSBundle mainBundle] objectForInfoDictionaryKey:@"AnalyticsUserLocationServices"];
 
@@ -48,7 +48,7 @@
     if (traits == (id)[NSNull null]) {
         traits = nil;
     }
-    
+
     [[SEGAnalytics sharedAnalytics] identify:userId traits:traits];
 }
 
@@ -60,7 +60,7 @@
     if (traits == (id)[NSNull null]) {
         traits = nil;
     }
-    
+
     [[SEGAnalytics sharedAnalytics] group:groupId traits:traits];
 }
 
@@ -72,7 +72,7 @@
     if (properties == (id)[NSNull null]) {
         properties = nil;
     }
-    
+
     [[SEGAnalytics sharedAnalytics] track:event properties:properties];
 }
 
@@ -85,18 +85,18 @@
     if (properties == (id)[NSNull null]) {
         properties = [NSMutableDictionary dictionary];
     }
-    
+
     if (category != (id)[NSNull null] && [category length] != 0) {
         [properties setValue:category forKey:@"category"];
     }
-    
+
     [[SEGAnalytics sharedAnalytics] screen:name properties:properties];
 }
 
 - (void)alias:(CDVInvokedUrlCommand*)command
 {
     NSString* newId = [command.arguments objectAtIndex:0];
-    
+
     [[SEGAnalytics sharedAnalytics] alias:newId];
 }
 

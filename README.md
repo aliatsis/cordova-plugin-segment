@@ -13,9 +13,13 @@ In config.xml, you can put the following preferences:
 * \<preference name="analytics_debug_write_key" value="{Segment write key}" />
 
 ##iOS Integrations Setup
-Use CocoaPods:
-The default plugin configuration does not bundle any Segment integrations or core analytics SDKs.
-To add more your custom integrations, create a `Podfile` file in your iOS platform root directory and add your segment integration dependencies. See the [iOS Quickstart][] for examples.
+This plugin uses cordova-plugin-cocoapods-support to automatically bundle in the Segment iOS SDK through CocaoPods.
+
+The only caveat is that you will need to run the project from AppName.xcworkspace instead of AppName.xcodeproj (this is a limitation introduced by CocoaPods itself).
+
+Also for this reason, if you are using Ionic and its command line tools, `ionic build` and `ionic run` will cause the archive build to fail. You will need to manually run the project in Xcode from AppName.xcworkspace.
+
+You might also want to consult official Segment documentation [iOS Quickstart][].
 
 ##Android Integrations Setup
 Use Gradle:

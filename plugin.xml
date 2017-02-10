@@ -31,7 +31,7 @@
 
         <config-file target="AndroidManifest.xml" parent="/manifest">
             <uses-permission android:name="android.permission.INTERNET" />
-            
+
             <!-- Recommended by us and most bundled integrations. -->
             <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
@@ -49,10 +49,12 @@
             <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE"/>
         </config-file>
 
-        <framework src="com.segment.analytics.android:analytics-core:+"/>
+        <framework src="com.segment.analytics.android:analytics:4+"/>
 
         <source-file src="src/android/AnalyticsPlugin.java" target-dir="src/com/segment/analytics/cordova"/>
     </platform>
+
+    <dependency id="cordova-plugin-cocoapod-support" />
 
     <platform name="ios">
         <config-file target="config.xml" parent="/*">
@@ -66,5 +68,9 @@
 
         <header-file src="src/ios/AnalyticsPlugin.h" />
         <source-file src="src/ios/AnalyticsPlugin.m" />
+        <pods-config ios-min-version="8.0" use-frameworks="true">
+        </pods-config>
+        <pod id="Analytics" version="3.5.5" />
     </platform>
+
 </plugin>
