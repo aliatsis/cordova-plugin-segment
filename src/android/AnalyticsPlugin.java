@@ -48,10 +48,14 @@ public class AnalyticsPlugin extends CordovaPlugin {
             analytics = null;
             Log.e(TAG, "Invalid write key: " + writeKey);
         } else {
+
             analytics = new Analytics.Builder(
                 cordova.getActivity().getApplicationContext(),
                 writeKey
-            ).logLevel(logLevel).build();
+            )
+            .logLevel(logLevel)
+            .trackApplicationLifecycleEvents()
+            .build();
 
             Analytics.setSingletonInstance(analytics);
         }

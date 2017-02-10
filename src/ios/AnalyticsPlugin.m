@@ -34,6 +34,7 @@
 
         SEGAnalyticsConfiguration *configuration = [SEGAnalyticsConfiguration configurationWithWriteKey:writeKey];
         configuration.shouldUseLocationServices = [useLocationServices boolValue];
+        configuration.trackApplicationLifecycleEvents = true;
         [SEGAnalytics setupWithConfiguration:configuration];
     } else {
         NSLog(@"[cordova-plugin-segment] ERROR - Invalid write key");
