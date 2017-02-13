@@ -16,7 +16,7 @@
     </engines>
 
     <js-module name="analytics" src="www/analytics.js">
-        <clobbers target="analytics" />
+        <clobbers target="cordova.plugins.analytics" />
     </js-module>
 
     <platform name="android">
