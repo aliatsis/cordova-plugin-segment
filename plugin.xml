@@ -64,6 +64,8 @@
             <preference name="analytics_debug_write_key"/>
         </config-file>
 
+        <framework src="Analytics" type="podspec" spec="~> 3.0" />
+
         <header-file src="src/ios/AnalyticsPlugin.h" />
         <source-file src="src/ios/AnalyticsPlugin.m" />
     </platform>
