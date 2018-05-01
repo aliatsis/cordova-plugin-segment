@@ -23,33 +23,67 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 public class AnalyticsPlugin extends CordovaPlugin {
 
     private static final String TAG = "AnalyticsPlugin";
-    private Analytics analytics;
-    private String writeKey;
+    // static to avoid potential duplicates
+    private static Analytics analytics;
 
     @Override protected void pluginInitialize() {
-        String writeKeyPreferenceName;
-        LogLevel logLevel;
 
-        if(BuildConfig.DEBUG) {
-            writeKeyPreferenceName = "analytics_debug_write_key";
-            logLevel = LogLevel.VERBOSE;
-        } else {
-            writeKeyPreferenceName = "analytics_write_key";
-            logLevel = LogLevel.NONE;
+        if (AnalyticsPlugin.analytics != null) {
+            // Log.d(TAG, "ANALYTICS INSTANCE ALREADY EXISTS!");
+            return;
         }
 
-        writeKey = this.preferences.getString(writeKeyPreferenceName, null);
+        // get Analytics instance if it's not already initialised
+        final String writeKey = this._getAnalyticsKey();
+        final LogLevel logLevel = this._getLogLevel();
+        final AnalyticsPlugin plugin = this;
 
+        // Log.d(TAG, "writeKey " + writeKey);
+
+        // using a thread pool so as not to block the main thread
+        Future<Analytics> future = cordova.getThreadPool().submit(new Callable<Analytics>() {
+            @Override
+            public Analytics call() throws Exception {
+                return plugin._getAnalyticsInstance(writeKey, logLevel);
+            }
+        });
+        try {
+            AnalyticsPlugin.analytics = future.get();
+            // Log.d(TAG, "AnalyticsPlugin.analytics " + AnalyticsPlugin.analytics.toString());
+            Analytics.setSingletonInstance(AnalyticsPlugin.analytics);
+        } catch (InterruptedException e) {
+            Log.e(TAG, "interrupted error");
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            Log.e(TAG, "execution error");
+            e.printStackTrace();
+        }
+    }
+
+    private LogLevel _getLogLevel() {
+        return (BuildConfig.DEBUG) ? LogLevel.VERBOSE : LogLevel.NONE;
+    }
+
+    private String _getAnalyticsKey() {
+        String preferenceName = (BuildConfig.DEBUG) ? "analytics_debug_write_key" : "analytics_write_key";
+        return this.preferences.getString(preferenceName, null);
+    }
+
+    // pure function used by concurrent thread
+    private Analytics _getAnalyticsInstance(String writeKey, LogLevel logLevel) {
+        Analytics a;
         if (writeKey == null || "".equals(writeKey)) {
-            analytics = null;
+            a = null;
             Log.e(TAG, "Invalid write key: " + writeKey);
         } else {
-
-            analytics = new Analytics.Builder(
+            a = new Analytics.Builder(
                 cordova.getActivity().getApplicationContext(),
                 writeKey
             )
@@ -57,13 +91,19 @@ public class AnalyticsPlugin extends CordovaPlugin {
             .trackApplicationLifecycleEvents()
             .build();
 
-            Analytics.setSingletonInstance(analytics);
         }
+        return a;
     }
 
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
-        if (analytics == null) {
+        // debug only
+//        if ("init".equals(action)) {
+//            this.pluginInitialize();
+//            return true;
+//        }
+
+        if (AnalyticsPlugin.analytics == null) {
             Log.e(TAG, "Error initializing");
             return false;
         }
@@ -97,12 +137,17 @@ public class AnalyticsPlugin extends CordovaPlugin {
         return false;
     }
 
-    private void identify(JSONArray args) {
-        analytics.with(cordova.getActivity().getApplicationContext()).identify(
-            optArgString(args, 0),
-            makeTraitsFromJSON(args.optJSONObject(1)),
-            null // passing options is deprecated
-        );
+    private void identify(final JSONArray args) {
+        cordova.getThreadPool().execute(new Runnable() {
+            @Override
+            public void run() {
+                analytics.with(cordova.getActivity().getApplicationContext()).identify(
+                        optArgString(args, 0),
+                        makeTraitsFromJSON(args.optJSONObject(1)),
+                        null // passing options is deprecated
+                );
+            }
+        });
     }
 
     private void group(JSONArray args) {
